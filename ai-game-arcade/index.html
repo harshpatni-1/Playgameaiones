@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0c10">
+<title>AI Game Arcade — Four takes. One cabinet.</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0c10;--panel:#12151b;--line:#292d35;--muted:#929aa7;--ink:#f4f4f0;--mint:#bbff6a;--pink:#ff7eb6;--blue:#7dd7ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+a{color:inherit}
+button,input{font:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
+.shell{max-width:1420px;margin:0 auto;padding:0 34px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.brandmark{width:31px;height:31px;border-radius:9px;background:var(--mint);color:#0c1007;display:grid;place-items:center;font-size:16px;font-weight:950;box-shadow:0 0 28px #bbff6a1b}
+.topmeta{color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+.topright{display:flex;align-items:center;gap:10px}
+.livepill{display:flex;align-items:center;gap:7px;border:1px solid #344033;color:#d9f9c2;border-radius:999px;padding:7px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.livepill i{width:6px;height:6px;background:var(--mint);border-radius:50%;box-shadow:0 0 10px var(--mint)}
+.hero{padding:76px 0 49px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:560px;height:560px;border:1px solid #343b30;border-radius:50%;right:-140px;top:-260px;box-shadow:0 0 0 48px #ffffff03,0 0 0 96px #ffffff02;pointer-events:none}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--mint);font:11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase;margin-bottom:23px}
+.eyebrow:before{content:"";width:26px;height:1px;background:var(--mint)}
+h1{font-size:clamp(48px,8.6vw,118px);line-height:.88;letter-spacing:-.085em;font-weight:800;max-width:1000px;margin:0;position:relative;z-index:1}
+h1 em{font-style:normal;color:var(--mint)}
+.hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-top:32px;position:relative;z-index:1}
+.intro{max-width:490px;color:#b1b7c1;font-size:15px;line-height:1.7;margin:0}
+.stats{display:flex;gap:24px;flex-wrap:wrap}
+.stat{border-left:1px solid #42464c;padding-left:13px}
+.stat strong{display:block;font-size:19px;letter-spacing:-.04em}
+.stat span{display:block;color:var(--muted);font-size:10px;margin-top:4px;text-transform:uppercase;letter-spacing:.09em}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
+.section-title{display:flex;align-items:center;gap:13px}
+.section-title h2{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.13em;font-weight:750}
+.count{font:11px ui-monospace,monospace;color:var(--muted)}
+.search{display:flex;align-items:center;gap:8px;background:#11141a;border:1px solid #292d35;border-radius:9px;padding:10px 12px;width:min(280px,100%)}
+.search svg{width:15px;height:15px;color:#7c8590;flex:none}
+.search input{width:100%;min-width:0;background:transparent;color:var(--ink);border:0;outline:none;font-size:12px}
+.search input::placeholder{color:#6b737e}
+.filters{display:flex;gap:7px;flex-wrap:wrap}
+.filter{border:1px solid #2b3038;border-radius:999px;padding:8px 12px;background:transparent;color:#aab1ba;font-size:10px;cursor:pointer;transition:all .18s}
+.filter.active,.filter:hover{background:var(--mint);border-color:var(--mint);color:#0a1005}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;padding-bottom:76px}
+.card{--accent:var(--mint);border:1px solid #2b3038;border-radius:15px;background:#111319;overflow:hidden;min-width:0;transition:border-color .2s,transform .25s,box-shadow .25s}
+.card:hover{border-color:#555d67;transform:translateY(-3px);box-shadow:0 18px 56px #0003}
+.card[hidden]{display:none}
+.art{height:clamp(220px,26vw,360px);position:relative;overflow:hidden;background:#141823;isolation:isolate}
+.art svg{display:block;width:100%;height:100%}
+.art:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 52%,rgba(10,11,15,.58))}
+.art-tag{position:absolute;top:15px;left:15px;z-index:2;background:#0b0d12c9;border:1px solid #ffffff22;border-radius:5px;padding:7px 9px;color:#e9edf1;font:10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;backdrop-filter:blur(10px)}
+.art-seq{position:absolute;right:16px;top:17px;z-index:2;font:10px ui-monospace,monospace;color:#ffffffa1}
+.card-body{padding:23px 24px 22px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:13px}
+.titlegroup{min-width:0}
+.creator{color:var(--accent);text-transform:uppercase;font:10px ui-monospace,monospace;letter-spacing:.12em;margin-bottom:9px}
+.card h3{font-size:clamp(23px,3vw,35px);line-height:1;letter-spacing:-.065em;margin:0;font-weight:750;overflow-wrap:anywhere}
+.genre{flex:none;border:1px solid #30343b;color:#a6adb7;border-radius:5px;font:9px ui-monospace,monospace;padding:6px 7px;text-transform:uppercase}
+.desc{max-width:540px;color:#aeb4bd;line-height:1.65;font-size:12px;margin:16px 0 20px}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #272b32;padding-top:16px}
+.controls{color:#7f8791;font:10px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.play{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:7px;background:var(--accent);color:#0b0d10;padding:11px 14px;font-size:11px;font-weight:800;letter-spacing:.02em;text-decoration:none;transition:transform .18s,filter .18s}
+.play:hover{transform:translateX(2px);filter:brightness(1.08)}
+.play svg{width:13px;height:13px}
+.empty{display:none;border:1px dashed #343943;color:var(--muted);padding:32px;border-radius:12px;text-align:center;grid-column:1/-1;font-size:13px}
+.empty.show{display:block}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:30px;border-top:1px solid var(--line);padding:30px 0 54px}
+.about h2{font-size:11px;text-transform:uppercase;letter-spacing:.13em;margin:0 0 12px}
+.about p{font-size:12px;line-height:1.75;color:#969eaa;max-width:560px;margin:0}
+.about .mono{font:11px/1.8 ui-monospace,monospace;color:#a6adb7}
+footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:18px 0 24px;color:#656d78;font:10px ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase}
+@media(max-width:760px){.shell{padding:0 18px}.topmeta{display:none}.hero{padding:56px 0 36px}.hero-bottom{align-items:flex-start;flex-direction:column}.stats{gap:17px}.toolbar{align-items:stretch;flex-direction:column}.grid{grid-template-columns:1fr;gap:13px;padding-bottom:48px}.art{height:260px}.card-body{padding:20px}.about{grid-template-columns:1fr;gap:23px}footer{flex-direction:column;gap:8px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a class="brand" href="./index.html" aria-label="AI Game Arcade home"><span class="brandmark">A</span><span>AI Game Arcade</span></a>
+  <div class="topmeta">FOUR ENGINES / FOUR INTERPRETATIONS</div>
+  <div class="topright"><span class="livepill"><i></i> Local builds</span></div>
+</header>
+<section class="hero">
+  <div class="eyebrow">Independent game experiments · 001—004</div>
+  <h1>Four takes.<br>One <em>arcade.</em></h1>
+  <div class="hero-bottom">
+    <p class="intro">Four standalone rhythm games, each built from a different AI-assisted starting point. Pick a cabinet, learn its rhythm, and see how the interpretations play differently.</p>
+    <div class="stats" aria-label="Collection stats">
+      <div class="stat"><strong>04</strong><span>Games</span></div>
+      <div class="stat"><strong>01</strong><span>Genre family</span></div>
+      <div class="stat"><strong>0</strong><span>External assets needed</span></div>
+    </div>
+  </div>
+</section>
+<section aria-label="Game collection">
+<div class="toolbar">
+  <div class="section-title"><h2>Choose your cabinet</h2><span class="count" id="resultCount">04 TITLES</span></div>
+  <div style="display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end">
+    <div class="filters" aria-label="Filter games">
+      <button class="filter active" type="button" data-filter="all">All games</button>
+      <button class="filter" type="button" data-filter="grok">Grok</button>
+      <button class="filter" type="button" data-filter="chatgpt">ChatGPT</button>
+      <button class="filter" type="button" data-filter="claude">Claude</button>
+      <button class="filter" type="button" data-filter="gemini">Gemini</button>
+    </div>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.2 4.2"/></svg>
+      <input id="search" type="search" autocomplete="off" placeholder="Search games..." aria-label="Search games">
+    </label>
+  </div>
+</div>
+<div class="grid" id="gameGrid">
+<article class="card" data-ai="grok" data-search="grok neon pulse rhythm platformer one tap">
+<div class="art" style="--accent:#a5f768;background:#101925">
+<span class="art-tag">GROK / BUILD 01</span><span class="art-seq">Nº 001</span>
+<svg viewBox="0 0 700 370" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Original cyan magenta rhythm landscape preview">
+<defs><linearGradient id="g1sky" x2="0" y2="1"><stop stop-color="#101b35"/><stop offset="1" stop-color="#391746"/></linearGradient><linearGradient id="g1floor" x2="0" y2="1"><stop stop-color="#31204a"/><stop offset="1" stop-color="#10121f"/></linearGradient><linearGradient id="g1cube"><stop stop-color="#12f4ef"/><stop offset="1" stop-color="#b3ff65"/></linearGradient></defs>
+<rect width="700" height="370" fill="url(#g1sky)"/>
+<circle cx="510" cy="98" r="74" fill="#ff5cbe" opacity=".18"/><circle cx="510" cy="98" r="52" fill="none" stroke="#ff70c5" stroke-width="1.5" opacity=".6"/><circle cx="510" cy="98" r="35" fill="none" stroke="#ff70c5" opacity=".6"/>
+<g stroke="#79e9e5" opacity=".23" stroke-width="1"><path d="M0 205H700M0 235H700M0 265H700M0 295H700M0 325H700"/><path d="M350 180 0 370M350 180 100 370M350 180 200 370M350 180 300 370M350 180 400 370M350 180 500 370M350 180 600 370M350 180 700 370"/></g>
+<path d="M0 287 70 245 125 275 206 216 260 266 320 230 383 270 444 226 496 265 555 228 625 270 700 230V370H0Z" fill="#222448"/>
+<rect y="300" width="700" height="70" fill="url(#g1floor)"/><path d="M0 301H700" stroke="#5fffea" stroke-width="2" opacity=".8"/>
+<g fill="#ff5dba"><path d="M153 299 182 245 211 299Z"/><path d="M555 299 584 245 613 299Z"/></g>
+<g transform="translate(330 247) rotate(12)"><rect x="-24" y="-24" width="48" height="48" rx="5" fill="url(#g1cube)" stroke="#e8fff7" stroke-width="3"/><path d="M-11 -10H-2V-1H-11ZM5 -10H14V-1H5ZM-10 8H12" fill="none" stroke="#112238" stroke-width="4"/></g>
+<path d="M245 292Q285 270 314 284" stroke="#7cffdc" stroke-width="2" fill="none"/><circle cx="253" cy="287" r="3" fill="#e8fff7"/><circle cx="275" cy="280" r="2" fill="#ff81d0"/>
+</svg></div>
+<div class="card-body"><div class="card-top"><div class="titlegroup"><div class="creator">Made with Grok</div><h3>NEON PULSE</h3></div><span class="genre">Rhythm run</span></div><p class="desc">A bright one-tap rhythm platformer. Read the gaps, hit the beat, and learn its particular brand of neon momentum.</p><div class="card-bottom"><span class="controls">Space / Click / Touch</span><a class="play" href="games/grok-neon-pulse.html">Play game <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h13M10 4l6 6-6 6"/></svg></a></div></div>
+</article>
+<article class="card" data-ai="chatgpt" data-search="chatgpt pulse rift precision platformer portals cube ship ball wave ufo">
+<div class="art" style="--accent:#6df9d5;background:#080916">
+<span class="art-tag">CHATGPT / BUILD 02</span><span class="art-seq">Nº 002</span>
+<svg viewBox="0 0 700 370" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Mint geometric portal on a dark star field">
+<defs><linearGradient id="g2bg" x2="1" y2="1"><stop stop-color="#071b29"/><stop offset=".55" stop-color="#17103b"/><stop offset="1" stop-color="#090b15"/></linearGradient><radialGradient id="g2orb"><stop stop-color="#6df9d5" stop-opacity=".3"/><stop offset="1" stop-color="#6df9d5" stop-opacity="0"/></radialGradient></defs><rect width="700" height="370" fill="url(#g2bg)"/>
+<circle cx="360" cy="175" r="185" fill="url(#g2orb)"/>
+<g fill="#d5fff6"><circle cx="72" cy="76" r="1.3"/><circle cx="135" cy="120" r="1"/><circle cx="583" cy="60" r="1.4"/><circle cx="615" cy="218" r="1"/><circle cx="204" cy="42" r="1"/><circle cx="455" cy="310" r="1.5"/><circle cx="90" cy="279" r="1.1"/><circle cx="540" cy="132" r="1"/><circle cx="303" cy="66" r="1"/></g>
+<g transform="translate(365 179)"><ellipse rx="105" ry="144" fill="none" stroke="#6df9d5" stroke-width="2" opacity=".8"/><ellipse rx="87" ry="126" fill="none" stroke="#aa82ff" stroke-width="8" opacity=".9"/><ellipse rx="67" ry="105" fill="none" stroke="#6df9d5" stroke-width="1.5" opacity=".65"/><ellipse rx="44" ry="81" fill="none" stroke="#f47fb5" stroke-width="2" opacity=".9"/></g>
+<path d="M0 291 80 268 135 290 203 260 260 288 320 264 378 286 452 260 500 288 572 264 640 286 700 272V370H0Z" fill="#142b35"/>
+<path d="M0 308H700M0 330H700M0 352H700" stroke="#6df9d5" opacity=".32"/><path d="M365 260 0 370M365 260 170 370M365 260 280 370M365 260 450 370M365 260 570 370M365 260 700 370" stroke="#6df9d5" opacity=".2"/>
+<g transform="translate(250 265) rotate(-8)"><rect x="-20" y="-20" width="40" height="40" rx="5" fill="#6df9d5" stroke="#dffff8" stroke-width="3"/><path d="M-9 -8h6v6h-6m12-6h6v6H3M-8 8H8" fill="none" stroke="#0a2630" stroke-width="3"/></g>
+</svg></div>
+<div class="card-body"><div class="card-top"><div class="titlegroup"><div class="creator">Made with ChatGPT</div><h3>PULSE//RIFT</h3></div><span class="genre">Precision</span></div><p class="desc">The most technical take in the lineup: fixed-step motion, multiple player modes, portals, evolving level patterns, and original procedural synth music.</p><div class="card-bottom"><span class="controls">Space / W / ↑ / Tap</span><a class="play" href="games/chatgpt-pulse-rift.html">Play game <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h13M10 4l6 6-6 6"/></svg></a></div></div>
+</article>
+<article class="card" data-ai="claude" data-search="claude neon pulse landscape runner hold release">
+<div class="art" style="--accent:#ff8c75;background:#150f33">
+<span class="art-tag">CLAUDE / BUILD 03</span><span class="art-seq">Nº 003</span>
+<svg viewBox="0 0 700 370" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Coral and gold arcade skyline with a geometric player">
+<defs><linearGradient id="g3sky" x2="0" y2="1"><stop stop-color="#25255f"/><stop offset=".65" stop-color="#db5664"/><stop offset="1" stop-color="#ffb76c"/></linearGradient><linearGradient id="g3floor" x2="0" y2="1"><stop stop-color="#34235c"/><stop offset="1" stop-color="#100d2a"/></linearGradient></defs><rect width="700" height="370" fill="url(#g3sky)"/><circle cx="520" cy="105" r="65" fill="#ffd23f" opacity=".92"/><circle cx="520" cy="105" r="82" fill="none" stroke="#ffd23f" opacity=".4"/>
+<path d="M0 240 58 220 110 246 166 186 226 240 282 205 332 243 391 193 448 244 510 205 570 240 622 190 700 237V370H0Z" fill="#302459"/>
+<g fill="#191739"><path d="M25 205h39v95H25zM76 228h58v72H76zM184 208h47v92h-47zM261 228h68v72h-68zM380 220h42v80h-42zM463 215h52v85h-52zM583 220h42v80h-42z"/></g>
+<g stroke="#ffb26e" stroke-width="2" opacity=".5"><path d="M35 220h8m10 0h8M87 241h8m10 0h8m-18 14h8m10 0h8M195 222h8m10 0h8M273 244h8m10 0h8m-18 13h8m10 0h8M474 229h8m10 0h8"/></g>
+<rect y="298" width="700" height="72" fill="url(#g3floor)"/><path d="M0 299H700" stroke="#ffd23f" stroke-width="3"/><g stroke="#ffb36a" opacity=".28"><path d="M350 299 0 370M350 299 100 370M350 299 220 370M350 299 480 370M350 299 600 370M350 299 700 370"/><path d="M0 323H700M0 347H700"/></g>
+<g transform="translate(304 257) rotate(9)"><rect x="-24" y="-24" width="48" height="48" rx="2" fill="#2ee6c0" stroke="#fff0ce" stroke-width="4"/><path d="M-12 -10h8v8h-8m16-8h8v8h-8M-10 9H10" stroke="#150f33" stroke-width="4" fill="none"/></g>
+<path d="M234 291Q265 275 286 285" stroke="#ffd23f" stroke-width="3" fill="none"/><circle cx="248" cy="286" r="4" fill="#ffe9c2"/>
+</svg></div>
+<div class="card-body"><div class="card-top"><div class="titlegroup"><div class="creator">Made with Claude</div><h3>NEON PULSE</h3></div><span class="genre">Arcade runner</span></div><p class="desc">A landscape-first, punchy arcade interpretation with a bold sunset palette, synthesized soundtrack, quick retries, and a fast one-button loop.</p><div class="card-bottom"><span class="controls">Hold / Release / Touch</span><a class="play" href="games/claude-neon-pulse.html">Play game <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h13M10 4l6 6-6 6"/></svg></a></div></div>
+</article>
+<article class="card" data-ai="gemini" data-search="gemini cyber pulse cyber arcade space">
+<div class="art" style="--accent:#72dbff;background:#020208">
+<span class="art-tag">GEMINI / BUILD 04</span><span class="art-seq">Nº 004</span>
+<svg viewBox="0 0 700 370" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Cyan magenta cybernetic arcade tunnel">
+<defs><linearGradient id="g4bg" x2="1" y2="1"><stop stop-color="#050d24"/><stop offset=".55" stop-color="#11113b"/><stop offset="1" stop-color="#260c29"/></linearGradient></defs><rect width="700" height="370" fill="url(#g4bg)"/>
+<g transform="translate(350 178)" fill="none" stroke-width="2"><path d="M-330 -145H330V145H-330Z" stroke="#00ffff" opacity=".5"/><path d="M-260 -114H260V114H-260Z" stroke="#ff007f" opacity=".58"/><path d="M-190 -83H190V83H-190Z" stroke="#00ffff" opacity=".7"/><path d="M-120 -52H120V52H-120Z" stroke="#ff007f" opacity=".85"/><path d="M-50 -21H50V21H-50Z" stroke="#00ffff"/><path d="M-330 -145 -50 -21M330 -145 50 -21M-330 145 -50 21M330 145 50 21" stroke="#00ffff" opacity=".4"/></g>
+<g stroke="#00ffff" opacity=".23"><path d="M0 310H700M0 330H700M0 350H700M40 370 350 190 660 370"/></g>
+<g transform="translate(280 258) rotate(45)"><rect x="-23" y="-23" width="46" height="46" rx="4" fill="#ff007f" stroke="#fff" stroke-width="3"/><path d="M-11 -7h8v8h-8m16-8h8v8H5" stroke="#fff" stroke-width="3" fill="none"/></g>
+<circle cx="280" cy="258" r="50" fill="none" stroke="#ff007f" stroke-width="2" opacity=".35"/><circle cx="280" cy="258" r="66" fill="none" stroke="#00ffff" opacity=".2"/>
+<g fill="#00ffff"><circle cx="85" cy="90" r="3"/><circle cx="600" cy="70" r="2"/><circle cx="520" cy="280" r="3"/><circle cx="180" cy="55" r="2"/></g>
+</svg></div>
+<div class="card-body"><div class="card-top"><div class="titlegroup"><div class="creator">Made with Gemini</div><h3>CYBER PULSE</h3></div><span class="genre">Cyber arcade</span></div><p class="desc">A saturated cyberpunk spin on the genre: sharp hazards, high-contrast neon, level selection, and electronic energy from the first screen.</p><div class="card-bottom"><span class="controls">Keyboard / Touch</span><a class="play" href="games/gemini-cyber-pulse.html">Play game <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h13M10 4l6 6-6 6"/></svg></a></div></div>
+</article>
+<div class="empty" id="empty">No cabinets matched. Try another search.</div>
+</div>
+</section>
+<section class="about">
+  <div><h2>About this cabinet</h2><p>Four separate HTML games, kept independent so each preserves its own mechanics, sound design, and visual personality. The gallery is only the lobby; launch any title to play it on its own full-screen page.</p></div>
+  <div><h2>Controls at a glance</h2><p class="mono">SPACE / CLICK / TAP — jump<br>HOLD — flight-style modes where supported<br>ESC — pause where supported<br>M — mute where supported</p></div>
+</section>
+<footer><span>AI GAME ARCADE / EDITION 001</span><span>Four games · One collection</span><span>Made for the browser</span></footer>
+</div>
+<script>
+(function(){
+ const cards=Array.from(document.querySelectorAll('.card'));
+ const filters=Array.from(document.querySelectorAll('[data-filter]'));
+ const search=document.getElementById('search');
+ const empty=document.getElementById('empty');
+ const resultCount=document.getElementById('resultCount');
+ let active='all';
+ function update(){
+   const q=(search.value||'').trim().toLowerCase();let n=0;
+   cards.forEach(card=>{
+     const matchAi=active==='all'||card.dataset.ai===active;
+     const matchText=!q||(card.dataset.search+' '+card.innerText).toLowerCase().includes(q);
+     const show=matchAi&&matchText;card.hidden=!show;if(show)n++;
+   });
+   empty.classList.toggle('show',n===0);
+   resultCount.textContent=String(n).padStart(2,'0')+' TITLES';
+ }
+ filters.forEach(btn=>btn.addEventListener('click',()=>{
+   active=btn.dataset.filter;filters.forEach(b=>b.classList.toggle('active',b===btn));update();
+ }));
+ search.addEventListener('input',update);
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==search){e.preventDefault();search.focus()}if(e.key==='Escape'&&document.activeElement===search){search.value='';search.blur();update()}});
+ update();
+})();
+</script>
+</body>
+</html>
